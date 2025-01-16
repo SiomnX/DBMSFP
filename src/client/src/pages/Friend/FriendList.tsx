@@ -9,9 +9,10 @@ interface Friend {
 interface FriendListProps {
   friends: Friend[];
   onDelete: (friend_id: number) => void;
+  onRate: (listId: number) => void; // 評分按鈕的回調
 }
 
-const FriendList: React.FC<FriendListProps> = ({ friends, onDelete }) => {
+const FriendList: React.FC<FriendListProps> = ({ friends, onDelete, onRate }) => {
   return (
     <ul className="list-group">
       {friends.map((friend) => (
@@ -26,11 +27,18 @@ const FriendList: React.FC<FriendListProps> = ({ friends, onDelete }) => {
             </span>
           </div>
           <button
-            className="btn btn-danger btn-sm"
+            className="btn btn-danger btn-sm me-2"
             style={{ marginLeft: '200px' }} // spacing between Uname and delete button
             onClick={() => onDelete(friend.list_id)}
           >
             刪除
+          </button>
+          {/* 評分按鈕 */}
+          <button
+            className="btn btn-warning btn-sm me-2"
+            onClick={() => onRate(friend.list_id)}
+          >
+            評分
           </button>
         </li>
       ))}

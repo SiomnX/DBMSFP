@@ -6,7 +6,7 @@ def run_tests():
     db.connect()
 
     # 新增用戶
-    first_user_id = db.add_user("Monkey", "monkey@example.com", "12345")
+    first_user_id = db.add_user("Monkey", "monkey222@example.com", "12345")
     second_user_id = db.add_user("Godton", "godton@example.com", "56789")
     print(f"新增使用者 ID: {first_user_id}")
     print(f"新增使用者 ID: {second_user_id}")
@@ -51,7 +51,7 @@ def run_tests():
     print(f"新增交易類別 ID: {new_category_id}")
 
     # 創建交易
-    new_transaction_id = db.create_transaction("Lunch", 100, "Lunch with friends", new_category_id, first_user_id, 2)
+    new_transaction_id = db.create_transaction("Lunch", 100, "Lunch with friends", new_category_id, first_user_id, 2,2)
     print(f"新增交易 ID: {new_transaction_id}")
 
     # 查詢並顯示交易資訊

@@ -1,0 +1,215 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Trebuchet MS', sans-serif;
+    max-height: 100vh;
+  
+  }
+
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 設定高層級 */
+  }
+  
+  .modal-box {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center; /* 水平置中文字 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001; /* 設定高層級 */
+  }
+  
+  .close-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(to right, #ffecf5, #f1e1ff);
+    color: #2f2f2f;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+
+
+  .error-text {
+    color: #6c5ce7; /* 文字顏色 */
+    font-weight: bold; /* 加粗字體 */
+    font-size: 16px; /* 字體大小 */
+    max-width: 300px; /* 設置容器最大寬度 */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    word-break: break-word; 
+    white-space: normal;
+  }
+
+  .title-text {
+    color: #6c5ce7; /* 文字顏色 */
+    font-weight: bold; /* 加粗字體 */
+    font-size: 50px; /* 字體大小 */
+    text-align: left; /* 文字置左 */
+  }
+  
+  .subtitle-text {
+    color: #6c5ce7; /* 文字顏色 */
+    font-size: 16px; /* 字體大小 */
+    text-align: left; /* 文字置左 */
+  }
+
+  .submit-button {
+    margin-top: 20px;
+    height: 50px;
+    width: 150px;
+    padding: 10px;
+    border-radius: 50px;
+    background: linear-gradient(to right, #ffecf5, #f1e1ff);
+    color: #2f2f2f;
+    cursor: pointer;
+    margin-left: 15px;
+    margin-right: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .login-button {
+    margin-top: 20px;
+    height: 50px;
+    width: 150px;
+    padding: 10px;
+    border-radius: 50px;
+    background: linear-gradient(to right, #ffecf5, #f1e1ff);
+    color: #2f2f2f;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-right: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .start-button {
+    margin-top: 20px;
+    height: 50px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 50px;
+    background: linear-gradient(to right, #ffecf5, #f1e1ff);
+    color: #2f2f2f;
+    cursor: pointer;
+    margin-right: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 容器樣式，確保輸入框在文字正下方 */
+.input-container {
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  margin-bottom: 20px; /* 調整整體間距 */
+}
+
+.input-group {
+  display: flex; /* 將子元素排列為橫向一行 */
+  align-items: center; /* 垂直方向置中 */
+  gap: 10px; /* 控制元素之間的間距 */
+}
+
+
+.input-field {
+  flex: 1;
+  border: 1px solid rgb(189, 103, 235);
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px; /* 邊角圓滑 */
+  padding: 10px; /* 內部間距 */
+  font-size: 16px; /* 字體大小 */
+  color:#2f2f2f
+}
+
+/* 當輸入框聚焦時的樣式 */
+.input-field:focus {
+  border-color: rgb(160, 160, 197);
+  box-shadow: 0 0 9px rgba(166, 35, 232, 0.5); /* 添加陰影效果 */
+  outline: none; /* 移除默認的聚焦外框 */
+}
+
+.btn-outline-secondary {
+  width: 45px; 
+  height: 45px;
+  display: flex; /* 水平排列 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  padding: 0; /* 去除內部間距 */
+  border: 1px solid  rgb(189, 103, 235); /* 邊框寬度和顏色 */
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px; /* 圓角邊框 */
+}
+
+.btn-outline-secondary:focus {
+  border-color: rgb(160, 160, 197);
+  box-shadow: 0 0 9px rgba(166, 35, 232, 0.5); /* 添加陰影效果 */
+  outline: none; /* 移除默認的聚焦外框 */
+}
+
+.form-select{ 
+  height: 45px;
+  display: flex; /* 水平排列 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  padding: 10px; /* 去除內部間距 */
+  border: 1px solid  rgb(189, 103, 235); /* 邊框寬度和顏色 */
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px; /* 圓角邊框 */
+}
+
+.form-select:focus {
+  border-color: rgb(160, 160, 197);
+  box-shadow: 0 0 9px rgba(166, 35, 232, 0.5); /* 添加陰影效果 */
+  outline: none; /* 移除默認的聚焦外框 */
+}
+
+.welcome-text {
+  color: rgb(189, 103, 235); /* 文字顏色 */
+  font-weight: bold; /* 加粗字體 */
+  font-size: 30px; /* 字體大小 */
+  text-align: left; /* 文字置左 */
+  margin-bottom: 0px;
+}
+
+.started-text {
+  color: #4c4c4c; /* 文字顏色 */
+  font-size: 15px; /* 字體大小 */
+  text-align: left; /* 文字置左 */
+}
+
+.Login-button{
+  margin-top: 50px;
+  height: 30px;
+  width: 100%;
+  padding: 0px;
+  border-radius: 50px;
+  background: linear-gradient(to right, #f2c5da, #b366f6);
+  color: #f2f2f2;
+  cursor: pointer;
+  margin-right: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.create-button{
+  margin-top: 20px;
+  height: 30px;
+  width: 100%;
+  padding: 0px;
+  border-radius: 50px;
+  background-color: white;
+  border: 1.5px solid #ae60f3;;
+  color: #ae60f3;
+  cursor: pointer;
+  margin-right: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

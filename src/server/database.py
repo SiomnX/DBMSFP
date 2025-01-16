@@ -53,7 +53,7 @@ class Database:
                 cursor.execute(query, params)
                 self.connection.commit();
                 if cursor.description:  # 如果是查詢語句
-                    return cursor.fetchall()  # 返回結果
+                   return cursor.fetchall()  # 返回結果
                 return None  # 非查詢語句 (如 INSERT, UPDATE)
         except Exception as e:
             print(f"Error executing query: {e}")

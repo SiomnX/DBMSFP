@@ -17,7 +17,7 @@ services:
       context: ./src/server
       dockerfile: dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5001"
     env_file:
       - .env
     environment:
@@ -34,7 +34,7 @@ services:
     container_name: redis_new
     image: redis:alpine
     ports:
-      - "7000:6379"
+      - "7001:6379"
     volumes:
       - redis_data:/data
     restart: always

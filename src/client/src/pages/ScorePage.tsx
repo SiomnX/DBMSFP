@@ -7,7 +7,7 @@ const ScorePage: React.FC = () => {
   // 獲取個人積分
   const fetchMyScore = async () => {
     try {
-      const response = await fetch('http://localhost:5000/user/1'); // 假設用戶 ID = 1
+      const response = await fetch('http://localhost:5001/api/leaderboard/score/43'); // 用戶ID自行輸入數字
       const data = await response.json();
       if (data.success) {
         setMyScore(data.data.credit_score);
@@ -23,7 +23,7 @@ const ScorePage: React.FC = () => {
   // 獲取排行榜
   const fetchLeaderboard = async () => {
     try {
-      const response = await fetch('http://localhost:5000/leaderboard');
+      const response = await fetch('http://localhost:5001/api/leaderboard/top');
       const data = await response.json();
       if (data.success) {
         setLeaderboard(data.data);
@@ -33,6 +33,28 @@ const ScorePage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
       alert('Error fetching leaderboard');
+    }
+  };
+
+   // 更新 Redis 並重新獲取數據
+  const refreshScoreAndLeaderboard = async () => {
+    try {
+      // 更新 Redis
+      const updateResponse = await fetch('http://localhost:5001/api/leaderboard/update', {
+        method: 'POST',
+      });
+      const updateData = await updateResponse.json();
+  
+      if (updateData.success) {
+        // 重新拉取分數和排行榜數據
+        await fetchMyScore();
+        await fetchLeaderboard();
+      } else {
+        alert('Failed to update leaderboard');
+      }
+    } catch (error) {
+      console.error('Error updating leaderboard:', error);
+      alert('Error updating leaderboard');
     }
   };
 
@@ -48,7 +70,7 @@ const ScorePage: React.FC = () => {
       <p style={{ fontSize: '20px' }}>
         Your current score is: <strong>{myScore !== null ? myScore : 'Loading...'}</strong>
       </p>
-      <button
+      {/* <button
         style={{
           padding: '10px 20px',
           fontSize: '16px',
@@ -62,6 +84,23 @@ const ScorePage: React.FC = () => {
         onClick={fetchMyScore}
       >
         Refresh Score
+      </button> */}
+
+      
+      <button
+        style={{
+          padding: '10px 20px',
+          fontSize: '16px',
+          color: '#fff',
+          backgroundColor: '#4CAF50',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          marginBottom: '20px',
+        }}
+        onClick={refreshScoreAndLeaderboard} // 按下按鈕更新
+      >
+        Updating Leaderboard
       </button>
 
       <h2>Leaderboard</h2>

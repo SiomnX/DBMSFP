@@ -10,19 +10,22 @@ interface Friend {
   nickname: string;
 }
 
+
 const FriendListPage: React.FC = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [friendToDelete, setFriendToDelete] = useState<Friend | null>(null); // Track 刪除的好友
-  const [userId] = useState<number>(6); // temp hardcode user ID for testing
+  const [friendToRate, setFriendToRate] = useState<Friend | null>(null); // 用來追蹤要評分的好友
+  const [selectedScore, setSelectedScore] = useState<number>(0); // 選擇的評分
+  const [userId] = useState<number>(43); // temp hardcode user ID for testing
 
-  //const userId = 6;
+  //const userId = 1;
 
   // fetch friends from backend
   useEffect(() => {
     console.log('Fetching friends for user:', userId); // Debug log
     axios
-      .get(`http://127.0.0.1:5001/api/friendslist/?user_id=${userId}`)
+      .get(`http://localhost:5001/api/friendslist/?user_id=${userId}`)
       .then((response) => {
         if (response.data) {
           console.log('Friends fetched:', response.data); // debug msg
@@ -42,7 +45,7 @@ const FriendListPage: React.FC = () => {
     }
 
     axios
-      .post('http://127.0.0.1:5001/api/friendslist/', {
+      .post('http://localhost:5001/api/friendslist/', {
         user_id: userId, // dynamic uID
         friend_id: friendId,
         nickname,
@@ -65,7 +68,7 @@ const FriendListPage: React.FC = () => {
     console.log('Deleting friend:', friendToDelete); // Debug
     if (friendToDelete) {
       axios
-        .delete(`http://127.0.0.1:5001/api/friendslist/${friendToDelete.list_id}`)
+        .delete(`http://localhost:5001/api/friendslist/${friendToDelete.list_id}`)
         .then(() => {
           setFriends((prev) =>
             prev.filter((friend) => friend.list_id !== friendToDelete.list_id)
@@ -74,6 +77,27 @@ const FriendListPage: React.FC = () => {
         })
         .catch((error) => console.error('Error deleting friend:', error));
     }
+  };
+
+    // 評分好友
+  const rateFriend = () => {
+    if (!friendToRate || selectedScore === 0) {
+      alert("請選擇好友並設定評分！");
+      return;
+    }
+  
+    axios
+      .post(`http://localhost:5001/api/leaderboard/creditEvaluation`, {
+        user_id: userId,
+        friend_id: friendToRate.friend_id,
+        score: selectedScore,
+      })
+      .then((response) => {
+        alert("評分成功！");
+        setFriendToRate(null);
+        setSelectedScore(0); // 重置選擇的分數
+      })
+      .catch((error) => console.error("Error rating friend:", error));
   };
 
   return (
@@ -97,6 +121,11 @@ const FriendListPage: React.FC = () => {
             const friend = friends.find((f) => f.list_id === listId);
             if (friend) setFriendToDelete(friend); // Show confirmation modal
           }}
+
+          onRate={(listId: number) => {
+            const friend = friends.find((f) => f.list_id === listId);
+            if (friend) setFriendToRate(friend); // 開啟評分模式
+          }}
         />
       )}
 
@@ -112,8 +141,54 @@ const FriendListPage: React.FC = () => {
         onConfirm={deleteFriend}
         onCancel={() => setFriendToDelete(null)}
       />
+
+      {/* 評分對話框 */}
+      {friendToRate && (
+        <div className="modal show d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">評分 {friendToRate.nickname}</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setFriendToRate(null)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <label htmlFor="score">選擇分數 (1-5):</label>
+                <select
+                  id="score"
+                  className="form-select"
+                  value={selectedScore}
+                  onChange={(e) => setSelectedScore(Number(e.target.value))}
+                >
+                  <option value={0}>請選擇</option>
+                  <option value={-20}>1 - 很差</option>
+                  <option value={-10}>2 - 不太好</option>
+                  <option value={0}>3 - 普通</option>
+                  <option value={10}>4 - 不錯</option>
+                  <option value={20}>5 - 很棒</option>
+                </select>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setFriendToRate(null)}
+                >
+                  關閉
+                </button>
+                <button className="btn btn-primary" onClick={rateFriend}>
+                  評分
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default FriendListPage;
+FriendListPage.tsx

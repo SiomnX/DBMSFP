@@ -8,12 +8,11 @@ CREATE TABLE "User" (
 );
 
 -- "friend_list" 表：存儲使用者之間的好友關係
-CREATE TABLE
-    "friend_list" (
-        "list_ID" SERIAL PRIMARY KEY,
-        "user_ID" INTEGER NOT NULL REFERENCES "users" ("user_ID") ON DELETE CASCADE,
-        "friend_ID" INTEGER NOT NULL REFERENCES "users" ("user_ID") ON DELETE CASCADE,
-        "nickname" VARCHAR(100)
+CREATE TABLE "Friend_List" (
+        list_ID SERIAL PRIMARY KEY,
+        user_ID INTEGER NOT NULL REFERENCES "User" (user_ID) ON DELETE CASCADE,
+        friend_ID INTEGER NOT NULL REFERENCES "User" (user_ID) ON DELETE CASCADE,
+        nickname VARCHAR(100)
         -- Constraint: Ensure no duplicate friendships between users
         CONSTRAINT unique_user_friend UNIQUE (user_ID, friend_ID),
         -- Constraint: Prevent users from adding themselves as a friend
@@ -21,37 +20,36 @@ CREATE TABLE
     );
 
 -- Category 表：存儲交易類別資訊
-CREATE TABLE Category (
+CREATE TABLE "Category" (
     category_ID SERIAL PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL
 );
 
 -- Transaction 表：存儲交易資訊
-CREATE TABLE Transaction (
+CREATE TABLE "Transaction" (
     transaction_ID SERIAL PRIMARY KEY,
     item VARCHAR(255) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
     description TEXT,
-    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    category_ID INTEGER REFERENCES Category(category_ID) ON DELETE SET NULL,
+    transaction_date NOT NULL,
+    category_ID INTEGER REFERENCES "Category"(category_ID) ON DELETE SET NULL,
     payer_ID INTEGER NOT NULL REFERENCES "User"(user_ID) ON DELETE CASCADE,
 	split_count INTEGER NOT NULL
 );
 
 -- Transaction_Debtor 關聯表：處理交易與債務人的多對多關係
-CREATE TABLE Transaction_Debtor (
-    transaction_ID INTEGER NOT NULL REFERENCES Transaction(transaction_ID) ON DELETE CASCADE,
+CREATE TABLE "Transaction_Debtor" (
+    transaction_ID INTEGER NOT NULL REFERENCES "Transaction"(transaction_ID) ON DELETE CASCADE,
     debtor_ID INTEGER NOT NULL REFERENCES "User"(user_ID) ON DELETE CASCADE,
     amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0),
     PRIMARY KEY (transaction_ID, debtor_ID)
 );
 
 -- Split 表：記錄更詳細的分帳資訊
-CREATE TABLE Split (
+CREATE TABLE "Split" (
     split_ID SERIAL PRIMARY KEY,
-    transaction_ID INTEGER NOT NULL REFERENCES Transaction(transaction_ID) ON DELETE CASCADE,
+    transaction_ID INTEGER NOT NULL REFERENCES "Transaction"(transaction_ID) ON DELETE CASCADE,
     debtor_ID INTEGER NOT NULL REFERENCES "User"(user_ID) ON DELETE CASCADE,
     payer_ID INTEGER NOT NULL REFERENCES "User"(user_ID) ON DELETE CASCADE,
-	amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0)
+ amount DECIMAL(10, 2) NOT NULL CHECK (amount > 0)
 );
-

@@ -1,115 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import "./SplitPage.css";
+
+
+interface SplitRecord {
+  split_id: number;
+  transaction_id: number;
+  debtor_id: number;
+  payer_id: number;
+  amount: number;
+}
 
 const SplitPage: React.FC = () => {
-  // 假資料
-  const [transactions] = useState([
-    {
-      id: 1,
-      payer: "Alice",
-      totalAmount: 1000,
-      splitters: [
-        { name: "Bob", amount: 400 },
-        { name: "Charlie", amount: 300 },
-        { name: "Alice", amount: 300 },
-      ],
-      date: "2025-01-12",
-      description: "Dinner",
-      category: "飲食",
-      note: "Team dinner at restaurant",
-    },
-    {
-      id: 2,
-      payer: "Bob",
-      totalAmount: 600,
-      splitters: [
-        { name: "Alice", amount: 200 },
-        { name: "Charlie", amount: 200 },
-        { name: "Bob", amount: 200 },
-      ],
-      date: "2025-01-10",
-      description: "Movie night",
-      category: "娛樂",
-      note: "Cinema tickets",
-    },
-  ]);
+  const [splits, setSplits] = useState<SplitRecord[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // 計算借貸關係
-  const calculateDebts = () => {
-    const debts: Record<string, Record<string, number>> = {};
-
-    transactions.forEach((transaction) => {
-      const { payer, splitters } = transaction;
-
-      splitters.forEach((splitter) => {
-        if (splitter.name !== payer) {
-          if (!debts[splitter.name]) debts[splitter.name] = {};
-          if (!debts[splitter.name][payer]) debts[splitter.name][payer] = 0;
-
-          debts[splitter.name][payer] += splitter.amount;
+  useEffect(() => {
+    const fetchSplits = async () => {
+      try {
+        const resp = await fetch("http://localhost:5001/api/split/");
+        if (!resp.ok) {
+          throw new Error(`Server Error: ${resp.status}`);
         }
-      });
-    });
+        const data = await resp.json();
+        if (data.data) {
+          const formattedSplits = data.data.map((split: any) => ({
+            split_id: split.split_id,
+            transaction_id: split.transaction_id,
+            debtor_id: split.debtor_id,
+            payer_id: split.payer_id,
+            amount: split.amount,
+          }));
+          setSplits(formattedSplits);
+        }
+      } catch (err: any) {
+        console.error("Error fetching splits:", err);
+        setError(err.message);
+      }
+    };    
+    fetchSplits();
+  }, []);
 
-    return debts;
-  };
+  if (error) {
+    return <div>無法取得分帳紀錄: {error}</div>;
+  }
 
-  const debts = calculateDebts();
+  if (!splits.length) {
+    return <div>目前沒有任何分帳紀錄</div>;
+  }
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center text-success mb-4">分帳結果</h2>
-
-      {/* 顯示交易列表 */}
-      <div className="mb-4">
-        <h4 className="text-primary">交易記錄</h4>
-        {transactions.map((transaction) => (
-          <div key={transaction.id} className="card mb-3">
-            <div className="card-body">
-              <h5 className="card-title">{transaction.description}</h5>
-              <h6 className="card-subtitle mb-2 text-muted">
-                日期: {transaction.date} | 分類: {transaction.category}
-              </h6>
-              <p className="card-text">
-                <strong>付款人:</strong> {transaction.payer}
-              </p>
-              <p className="card-text">
-                <strong>總金額:</strong> ${transaction.totalAmount}
-              </p>
-              <p className="card-text">
-                <strong>分帳者:</strong>
-                {transaction.splitters.map((splitter, index) => (
-                  <div key={index}>
-                    {splitter.name}: ${splitter.amount}
-                  </div>
-                ))}
-              </p>
-              <p className="card-text">
-                <strong>備註:</strong> {transaction.note}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 顯示借貸關係 */}
-      <div className="mb-4">
-        <h4 className="text-primary">借貸關係</h4>
-        {Object.entries(debts).map(([borrower, creditors]) => (
-          <div key={borrower} className="mb-3">
-            <strong>{borrower} 欠款:</strong>
-            <ul className="list-group">
-              {Object.entries(creditors).map(([creditor, amount]) => (
-                <li key={creditor} className="list-group-item">
-                  欠 {creditor}: ${amount.toFixed(2)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+    <div>
+      <h2>所有分帳紀錄</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>split_id</th>
+            <th>transaction_id</th>
+            <th>debtor_id</th>
+            <th>payer_id</th>
+            <th>amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {splits.map((s) => (
+            <tr key={s.split_id}>
+              <td>{s.split_id}</td>
+              <td>{s.transaction_id}</td>
+              <td>{s.debtor_id}</td>
+              <td>{s.payer_id}</td>
+              <td>{s.amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
 export default SplitPage;
-

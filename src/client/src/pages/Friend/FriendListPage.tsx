@@ -17,7 +17,7 @@ const FriendListPage: React.FC = () => {
   const [friendToDelete, setFriendToDelete] = useState<Friend | null>(null); // Track 刪除的好友
   const [friendToRate, setFriendToRate] = useState<Friend | null>(null); // 用來追蹤要評分的好友
   const [selectedScore, setSelectedScore] = useState<number>(0); // 選擇的評分
-  const [userId] = useState<number>(43); // temp hardcode user ID for testing
+  const [userId] = useState<number>(1); // temp hardcode user ID for testing
 
   //const userId = 1;
 

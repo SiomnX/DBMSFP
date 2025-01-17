@@ -94,7 +94,7 @@ def credit_evaluation():
 
         # 更新好友的信用分數
         query_update = """
-        UPDATE "user"
+        UPDATE "User"
         SET credit_score = COALESCE(credit_score, 0) + %s
         WHERE user_ID = %s;
         """

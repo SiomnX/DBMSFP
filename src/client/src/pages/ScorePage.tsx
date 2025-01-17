@@ -7,7 +7,7 @@ const ScorePage: React.FC = () => {
   // 獲取個人積分
   const fetchMyScore = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/leaderboard/score/43'); // 用戶ID自行輸入數字
+      const response = await fetch('http://localhost:5001/api/leaderboard/score/1'); // 用戶ID自行輸入數字
       const data = await response.json();
       if (data.success) {
         setMyScore(data.data.credit_score);
